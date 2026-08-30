@@ -1,1 +1,10 @@
-# Python backend dependencies have not yet been introduced in this repository.
+# SpendWise is an Expo/React Native (TypeScript) project and has no Python
+# dependencies. This file is intentionally empty of pip-installable packages.
+#
+# Install every application and development dependency from the repository's
+# committed package-lock.json by running this command in the project root:
+#
+#     npm ci
+#
+# Do not copy npm packages into this file: package.json declares them and
+# package-lock.json pins the complete dependency tree for reproducible installs.

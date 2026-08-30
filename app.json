@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "SpendWise",
+    "slug": "spendwise",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "spendwise",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.spendwise.prototype"
+    },
+    "android": {
+      "package": "com.spendwise.prototype",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SpendWise needs photo access so you can import a receipt for local processing."
+        }
+      ],
+      "expo-font",
+      "expo-splash-screen",
+      "expo-asset"
+    ]
+  }
+}

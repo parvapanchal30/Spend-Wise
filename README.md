@@ -1,3 +1,4 @@
+# Spend-Wise
 # SpendWise
 
 > Your financial memory.
