@@ -11,7 +11,9 @@ export interface TransactionRepository {
   list(): Promise<Transaction[]>;
   getById(id: string): Promise<Transaction | null>;
   save(transaction: Transaction): Promise<void>;
-  resetDemoData(): Promise<Transaction[]>;
+  saveMany(transactions: Transaction[]): Promise<void>;
+  delete(id: string): Promise<void>;
+  clear(): Promise<void>;
 }
 
 export interface ReceiptExtractor {

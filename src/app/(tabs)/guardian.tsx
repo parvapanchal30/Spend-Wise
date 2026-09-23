@@ -37,7 +37,7 @@ export default function GuardianScreen() {
           <View style={styles.legend}>
             <Text style={styles.legendTitle}>Date confidence</Text>
             <Text style={styles.legendCopy}>
-              Confirmed dates were reviewed by you. Estimated dates came from the local demo and need verification.
+              Confirmed dates were reviewed by you. Estimated dates need verification. Open a purchase to confirm a date or mark a reminder as resolved.
             </Text>
           </View>
 

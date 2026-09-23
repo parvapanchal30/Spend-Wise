@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 
 import { ReviewTransactionForm } from '@/components/ReviewTransactionForm';
 import type { ExtractedReceipt } from '@/domain/models';
@@ -37,7 +37,7 @@ describe('ReviewTransactionForm', () => {
     );
 
     await fireEvent.changeText(screen.getByLabelText('Merchant'), 'Amazon India');
-    await fireEvent.press(screen.getByLabelText('Save reviewed transaction'));
+    await act(async () => { fireEvent.press(screen.getByLabelText('Save reviewed transaction')); });
 
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     expect(onSave.mock.calls[0]?.[0]).toMatchObject({

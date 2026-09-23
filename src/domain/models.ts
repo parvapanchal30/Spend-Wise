@@ -35,7 +35,12 @@ export interface Transaction {
   receiptDocument?: ReceiptDocument;
   returnDeadline?: TransactionDeadline;
   warrantyExpiry?: TransactionDeadline;
-  source: 'demo' | 'receipt';
+  source: 'demo' | 'receipt' | 'manual' | 'csv';
+  notes?: string;
+  tags?: string[];
+  rawText?: string;
+  recurring?: boolean;
+  guardianStatus?: { return?: 'active' | 'resolved'; warranty?: 'active' | 'resolved' };
   createdAt: string;
   updatedAt: string;
 }
@@ -52,7 +57,12 @@ export interface ExtractionConfidence {
 }
 
 export interface ExtractedReceipt {
-  document: ReceiptDocument;
+  document?: ReceiptDocument;
+  rawText?: string;
+  notes?: string;
+  lineItems?: LineItem[];
+  source?: 'receipt' | 'manual' | 'csv';
+  extractionMethod?: 'ocr' | 'manual' | 'text';
   merchant: string;
   purchaseDate: string;
   total: number;

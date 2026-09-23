@@ -10,6 +10,7 @@ const icons: Record<string, { active: IconName; inactive: IconName }> = {
   index: { active: 'home', inactive: 'home-outline' },
   transactions: { active: 'receipt', inactive: 'receipt-outline' },
   guardian: { active: 'shield-checkmark', inactive: 'shield-checkmark-outline' },
+  insights: { active: 'pie-chart', inactive: 'pie-chart-outline' },
   settings: { active: 'settings', inactive: 'settings-outline' },
 };
 
@@ -37,6 +38,7 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="index" options={{ title: 'Home' }} />
       <Tabs.Screen name="transactions" options={{ title: 'Transactions' }} />
+      <Tabs.Screen name="insights" options={{ title: 'Insights' }} />
       <Tabs.Screen name="guardian" options={{ title: 'Guardian' }} />
       <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
     </Tabs>

@@ -1,140 +1,50 @@
-# Spend-Wise
 # SpendWise
 
-> Your financial memory.
+SpendWise is a mobile and web purchase tracker. Add purchases manually, capture a receipt, paste or import receipt text, or import a CSV bank statement. It starts with an empty history; sample transactions are no longer required. Purchases stay on the device or in the current browser profile until you export them.
 
-SpendWise is a planned mobile application for turning scattered financial documents into an organized, searchable record. The product is intended to import receipts, invoices, screenshots, and statements; extract transaction details; reveal spending patterns; and help users act before return windows or warranties expire.
+The app records items, notes, return and warranty dates, and the original receipt image when attached. You can edit or delete purchases, confirm dates, resolve Guardian reminders, search and filter transactions, view category and merchant spending, set a monthly budget, and review likely recurring expenses. Spending reports keep currencies separate because no exchange rates are assumed.
 
-## Why SpendWise
+## Run it
 
-Important purchase information is often split across paper receipts, email attachments, screenshots, and bank statements. That makes it difficult to answer simple questions such as what was purchased, how much was spent, whether an item can still be returned, or whether it remains under warranty. SpendWise aims to consolidate those records into a useful financial memory.
+Use Node.js 22.14+ or 24.3+. From this directory:
 
-This repository is currently at the documentation/bootstrap stage. It does not yet contain application code, and the capabilities below describe the intended MVP unless stated otherwise.
-
-## Planned MVP
-
-- Import receipts, invoices, screenshots, and financial statements.
-- Extract transaction fields such as merchant, date, total, currency, and line items.
-- Let users review and correct extracted data before saving it.
-- Search purchases and documents using transaction metadata and extracted text.
-- Show spending summaries and category-based analytics.
-- Preserve the source document alongside its structured transaction record.
-- Track return and warranty dates and notify users before relevant deadlines.
-
-## Return & Warranty Guardian
-
-The planned Return & Warranty Guardian connects purchase records with return policies and warranty periods. After an import, users should be able to confirm or enter the return deadline, warranty end date, and supporting notes. SpendWise can then surface upcoming deadlines and send reminders so users have time to return an item, request service, or locate proof of purchase.
-
-Policy interpretation and automated deadline extraction are not implemented in this repository. Dates derived from documents or merchant policies should be treated as suggestions and confirmed by the user.
-
-## Subscription tiers
-
-The repository does not yet define pricing, usage limits, or final entitlements. The following packaging is a product proposal, not implemented billing behavior.
-
-| Tier | Intended positioning |
-| --- | --- |
-| Free | Essential document capture, transaction review, search, and basic deadline tracking with limits still to be determined. |
-| Pro | Higher usage allowances, richer spending analytics, and expanded return and warranty reminders; exact entitlements are still to be determined. |
-| Premium | The most complete individual experience, with the highest planned allowances and future premium capabilities; exact entitlements are still to be determined. |
-
-## Technology stack
-
-No application technology stack has been selected in the repository yet. There are currently no mobile, web, backend, database, infrastructure, or package configuration files. Technology choices should be recorded here only after they are introduced in source control.
-
-Python is not currently used. [`requirements.txt`](requirements.txt) exists only to state that no Python backend dependencies have been introduced.
-
-## Architecture
-
-No executable architecture exists yet. A proposed high-level design for the MVP is:
-
-1. A mobile client captures or selects financial documents and lets users verify extracted fields.
-2. A secure ingestion boundary validates file type and size, removes unsafe metadata where appropriate, and stores the original document.
-3. An extraction pipeline performs OCR and document parsing, returning structured transaction candidates with confidence indicators.
-4. A transaction service stores user-approved records and maintains a search index.
-5. Analytics and deadline services derive spending summaries and upcoming return or warranty events.
-6. A notification boundary delivers user-configured reminders without exposing financial details on a locked device.
-
-Technology selection, data flows, retention rules, and trust boundaries must be finalized before implementation.
-
-## Repository structure
-
-```text
-.
-|-- README.md         # Product and development documentation
-`-- requirements.txt # Python dependency status; currently no dependencies
+```sh
+npm ci
+npm --prefix server ci
+npm run dev:web
 ```
 
-The application directory layout will be documented after the implementation is bootstrapped.
+Open the address shown by Expo, usually `http://localhost:8081`. `dev:web` starts Expo and the local OCR reader together. To test on a phone on the same trusted Wi-Fi network, run `npm run dev:mobile` instead and scan Expo's QR code with Expo Go SDK 57. The computer may ask you to allow local network access to the receipt reader. The app can always save purchases manually if the reader is unavailable.
 
-## Prerequisites
+Select **Add purchase** or **Scan or import receipt** to create a record. An image can be attached without OCR; choose **Send and read receipt** to send it to your own local reader. Review the extracted fields before saving. Tesseract downloads language data on its first use. See [the reader guide](server/README.md) for language and network settings.
 
-Only Git is required to work with the repository in its current documentation-only state. No application runtime, SDK, package manager, database, or external service is configured yet.
+## Bring in real data
 
-## Local development
+Settings accepts `.csv` statements and SpendWise `.json` backups, with a preview of valid rows, duplicates, and row errors before import. CSV must include a date (`Date`, `Transaction Date`, or `Posted Date`), merchant (`Merchant`, `Description`, or `Payee`), and positive expense (`Amount`, `Debit`, or `Withdrawal`). Include a `Currency` column if transactions differ from your saved default currency. YYYY-MM-DD and day-first DD/MM/YYYY dates are accepted. Credits and refunds are skipped with a reason; they are not counted as spending. You can download a CSV template from Settings.
 
-Clone the repository and enter the project directory:
+CSV and JSON exports include purchase details, notes, extracted text, and Guardian dates. Original receipt images are **not included** in these portable files. Keep those images separately. JSON is the recommended format for moving purchase records to a new device. Imported records with the same ID or same date, merchant, amount, and currency are skipped. A saved record can be edited from its details screen.
 
-```bash
-git clone https://github.com/parvapanchal30/Spend-Wise.git
-cd Spend-Wise
+Existing prototype users are migrated automatically: their real receipts are retained, demo purchases are excluded, and the original storage is backed up locally. New installations start empty. Use Settings → **Delete all local records** to remove purchases, app-owned receipt copies, and reminders from this installation.
+
+## Billing and reminders
+
+Manual tracking, imports, and analytics work without a RevenueCat account. The app provides an unlimited local mode when billing is unconfigured, in Expo Go, or on web. In a configured native store build, the Free plan allows 50 new records per month and a Pro entitlement removes the limit. Editing and exporting existing records remain available after the limit. The purchase and restore controls appear only when the native RevenueCat SDK and public platform key are available. Configure products, offering, and a `pro` entitlement in RevenueCat before testing purchases in a native development or store build. Public API keys go in `.env.local`; store secrets never belong in the app.
+
+Device reminders are optional and require notification permission after the user enables them in Settings. They schedule private text for confirmed, unresolved return and warranty dates. Calendar export is available when device notifications are unavailable. RevenueCat purchases and notifications need a native build for full validation; Expo Go/web cannot exercise store purchases.
+
+Copy `.env.example` to `.env.local` for optional integrations. `npm run dev:web` and `npm run dev:mobile` provide an OCR URL automatically unless you set `EXPO_PUBLIC_OCR_URL` yourself. Variables beginning with `EXPO_PUBLIC_` are visible in the app bundle and must contain public configuration only.
+
+## Data and privacy
+
+Transactions use local AsyncStorage; app-owned receipt images live in the app's document directory on phones. SpendWise does not provide its own encryption, account recovery, or cross-device sync. Browser storage may be cleared by the browser, and large images can reach browser storage limits. Export a backup and retain the original receipt images when moving devices. OCR uploads happen only after choosing automatic reading and go to the configured reader; the local reader processes images in memory and does not save them. A publicly hosted OCR reader needs authentication and HTTPS before handling personal documents.
+
+## Development checks
+
+```sh
+npm run validate
+npm run test:ocr
+npx expo-doctor@latest
+npx expo export --platform all --output-dir dist
 ```
 
-There is no application to install or run yet. Documentation changes can be made directly and reviewed with Git:
-
-```bash
-git diff --check
-git diff
-```
-
-## Environment variables
-
-No environment variables are currently defined or required. When services are added, required variable names should be committed in an example environment file using placeholder values only; secrets and personal data must never be committed.
-
-## Scripts and quality checks
-
-The repository currently provides no build, development, test, lint, or formatting scripts. Do not assume commands such as `npm test` or `pytest` are available until the corresponding project configuration is committed.
-
-The validation currently available is:
-
-```bash
-git diff --check
-```
-
-## Security and privacy
-
-SpendWise is intended to process sensitive financial documents. Any implementation should:
-
-- Collect only the files and fields needed for an explicit user action.
-- Encrypt documents and extracted data in transit and at rest.
-- Isolate every user's documents, transactions, search index, and derived analytics.
-- Use short-lived, least-privilege credentials and keep secrets out of clients, logs, and source control.
-- Validate uploads, restrict supported formats and sizes, and protect document-processing services from untrusted content.
-- Redact financial data, document contents, access tokens, and personal identifiers from telemetry and error reports.
-- Provide clear retention, export, and permanent-deletion controls, including deletion of derived data and backups where applicable.
-- Require explicit consent for OCR, analytics, notifications, or third-party processing and document each processor used.
-- Avoid displaying sensitive purchase details in notification previews by default.
-
-Before handling production data, the project should complete a threat model, define incident-response and key-rotation procedures, and review applicable privacy, payment, and data-residency obligations.
-
-## Status and roadmap
-
-**Current status:** planning and documentation bootstrap. No product functionality is implemented in this repository.
-
-Proposed milestones:
-
-1. Select the mobile and backend stack; define the data model, privacy model, and threat model.
-2. Bootstrap the application, automated tests, linting, CI, and example environment configuration.
-3. Implement secure document capture, storage, OCR, extraction review, and transaction persistence.
-4. Add search, spending analytics, and Return & Warranty Guardian reminders.
-5. Add account lifecycle and subscription enforcement after tier limits and pricing are approved.
-6. Run accessibility, security, privacy, extraction-accuracy, and mobile release testing before launch.
-
-## Contributing
-
-Until a dedicated contribution guide is added:
-
-1. Create a focused branch from the default branch.
-2. Keep changes scoped and avoid committing secrets, financial documents, or personal data.
-3. Add or update tests and documentation when implementation code is introduced.
-4. Run all repository-provided checks plus `git diff --check`.
-5. Open a pull request that explains the change, validation performed, and any privacy or security impact.
+See [testing guide](docs/TESTING.md) for a hands-on checklist and [OCR service guide](server/README.md) for reader setup. This is a device-local product; bank and email account connectors, secure cloud sync, and automatic recovery of receipt images are not part of this build.

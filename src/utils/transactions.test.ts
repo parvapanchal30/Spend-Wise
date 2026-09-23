@@ -46,4 +46,16 @@ describe('transaction utilities', () => {
   it('calculates spending only for the requested calendar month', () => {
     expect(calculateMonthlySpending(transactions, new Date(2026, 7, 20))).toBe(8999);
   });
+
+  it('keeps currencies separate instead of adding incomparable values', () => {
+    const mixed = [...transactions, { ...transactions[0]!, id: 'usd', total: 50, currency: 'USD' }];
+    expect(calculateMonthlySpending(mixed, new Date(2026, 7, 20))).toBe(8999);
+    expect(calculateMonthlySpending(mixed, new Date(2026, 7, 20), 'USD')).toBe(50);
+  });
+
+  it('searches notes and tags', () => {
+    const annotated = [{ ...transactions[0]!, notes: 'Team offsite', tags: ['reimbursable'] }];
+    expect(searchTransactions(annotated, 'offsite')).toHaveLength(1);
+    expect(searchTransactions(annotated, 'reimbursable')).toHaveLength(1);
+  });
 });

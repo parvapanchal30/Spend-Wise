@@ -62,6 +62,9 @@ export function Screen({
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: colors.background },
   content: {
+    width: '100%',
+    maxWidth: 960,
+    alignSelf: 'center',
     flexGrow: 1,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,

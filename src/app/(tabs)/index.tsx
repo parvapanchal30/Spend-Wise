@@ -13,11 +13,12 @@ import { useSpendWise } from '@/state/AppProvider';
 import { colors, radii, spacing } from '@/theme';
 import { formatCurrency } from '@/utils/currency';
 import { daysUntil } from '@/utils/deadlines';
-import { calculateMonthlySpending } from '@/utils/transactions';
+import { summarizeMonth } from '@/utils/analytics';
+import { monthKey } from '@/utils/dates';
 
 export default function HomeScreen() {
-  const { transactions, deadlines, usage, isLoading, error, refresh } = useSpendWise();
-  const monthlySpending = calculateMonthlySpending(transactions);
+  const { transactions, deadlines, usage, settings, isLoading, error, refresh } = useSpendWise();
+  const monthlySpending = summarizeMonth(transactions, monthKey(new Date()), settings.defaultCurrency).total;
   const recentTransactions = transactions.slice(0, 3);
   const nextDeadline = deadlines.find((deadline) => daysUntil(deadline.date) >= 0);
 
@@ -50,15 +51,17 @@ export default function HomeScreen() {
       <View style={styles.summary}>
         <View style={styles.summaryTop}>
           <View>
-            <Text style={styles.summaryLabel}>Spent this month</Text>
-            <Text style={styles.summaryAmount}>{formatCurrency(monthlySpending)}</Text>
+            <Text style={styles.summaryLabel}>Spent this month · {settings.defaultCurrency}</Text>
+            <Text style={styles.summaryAmount}>{formatCurrency(monthlySpending, settings.defaultCurrency)}</Text>
           </View>
           <View style={styles.privateBadge}>
             <Ionicons color={colors.accent} name="phone-portrait-outline" size={14} />
             <Text style={styles.privateBadgeText}>On device</Text>
           </View>
         </View>
+        {settings.monthlyBudget > 0 ? <Text style={styles.summaryLabel}>{formatCurrency(Math.abs(settings.monthlyBudget - monthlySpending), settings.defaultCurrency)} {monthlySpending > settings.monthlyBudget ? 'over budget' : 'left in your budget'}</Text> : null}
         <UsageMeter usage={usage} />
+        <Button label="View spending insights" variant="secondary" onPress={() => router.push('/insights')} />
       </View>
 
       <View style={styles.importArea}>
@@ -68,7 +71,8 @@ export default function HomeScreen() {
           label="Scan or import receipt"
           onPress={() => router.push('/import')}
         />
-        <Text style={styles.importHint}>Uses a deterministic local demo extractor in this milestone.</Text>
+        <Button icon="create-outline" label="Add a purchase manually" variant="secondary" onPress={() => router.push({ pathname: '/review', params: { mode: 'manual' } })} />
+        <Text style={styles.importHint}>Capture a receipt, enter a purchase, or import a statement from Settings.</Text>
       </View>
 
       <View style={styles.section}>

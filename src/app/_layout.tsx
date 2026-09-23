@@ -25,6 +25,7 @@ export default function RootLayout() {
           <Stack.Screen name="processing" options={{ headerShown: false }} />
           <Stack.Screen name="review" options={{ title: 'Review transaction' }} />
           <Stack.Screen name="transaction/[id]" options={{ title: 'Transaction details' }} />
+          <Stack.Screen name="edit/[id]" options={{ title: 'Edit purchase' }} />
         </Stack>
       </AppProvider>
     </SafeAreaProvider>

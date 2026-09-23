@@ -7,7 +7,7 @@ export function ConfidenceIndicator({ value }: { value: number }) {
   const tone = value >= 0.9 ? colors.accent : value >= 0.75 ? colors.warning : colors.danger;
   return (
     <View
-      accessibilityLabel={`${percentage}% mock extraction confidence`}
+      accessibilityLabel={`${percentage}% extraction confidence estimate`}
       style={styles.container}
     >
       <View style={styles.track}>

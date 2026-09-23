@@ -46,7 +46,7 @@ export function buildGuardianDeadlines(
     const productName = transaction.lineItems[0]?.name ?? 'Purchase';
     const entries: GuardianDeadline[] = [];
 
-    if (transaction.returnDeadline) {
+    if (transaction.returnDeadline && transaction.guardianStatus?.return !== 'resolved') {
       entries.push({
         id: `${transaction.id}-return`,
         transactionId: transaction.id,
@@ -59,7 +59,7 @@ export function buildGuardianDeadlines(
       });
     }
 
-    if (transaction.warrantyExpiry) {
+    if (transaction.warrantyExpiry && transaction.guardianStatus?.warranty !== 'resolved') {
       entries.push({
         id: `${transaction.id}-warranty`,
         transactionId: transaction.id,

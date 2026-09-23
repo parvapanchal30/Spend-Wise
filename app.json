@@ -2,7 +2,7 @@
   "expo": {
     "name": "SpendWise",
     "slug": "spendwise",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "scheme": "spendwise",
     "userInterfaceStyle": "light",
@@ -23,12 +23,17 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "SpendWise needs photo access so you can import a receipt for local processing."
+          "photosPermission": "Select a receipt image to attach to your purchase.",
+          "cameraPermission": "Take a photo of a receipt to add it to SpendWise.",
+          "microphonePermission": false
         }
       ],
       "expo-font",
       "expo-splash-screen",
-      "expo-asset"
+      "expo-asset",
+      "expo-status-bar",
+      "expo-sharing",
+      "expo-notifications"
     ]
   }
 }

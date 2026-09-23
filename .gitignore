@@ -4,6 +4,7 @@ node_modules/
 # Expo
 .expo/
 dist/
+dist-sdk57/
 web-build/
 expo-env.d.ts
 
@@ -23,5 +24,14 @@ npm-debug.log*
 
 # Local environment and OS files
 .env*.local
+.env
+server/.env
+server/.cache/
+server/uploads/
+server/*.traineddata
+test-results/
+playwright-report/
+artifacts/
+*.log
 .DS_Store
 Thumbs.db

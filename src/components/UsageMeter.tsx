@@ -8,14 +8,14 @@ export function UsageMeter({ usage }: { usage: MonthlyUsage }) {
   return (
     <View style={styles.container}>
       <View style={styles.labelRow}>
-        <Text style={styles.label}>Free plan usage</Text>
+        <Text style={styles.label}>Added this month</Text>
         <Text style={styles.value}>
-          {usage.transactionsUsed} of {usage.limit ?? 'unlimited'} transactions
+          {usage.limit === null ? `${usage.transactionsUsed} purchases · Unlimited` : `${usage.transactionsUsed} of ${usage.limit} purchases`}
         </Text>
       </View>
-      <View accessibilityRole="progressbar" style={styles.track}>
+      {usage.limit !== null ? <View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: usage.limit, now: usage.transactionsUsed }} style={styles.track}>
         <View style={[styles.fill, { width: `${ratio * 100}%` }]} />
-      </View>
+      </View> : null}
     </View>
   );
 }
